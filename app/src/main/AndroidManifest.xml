@@ -52,7 +52,9 @@
         <activity
             android:name=".activities.ProfileActivity"
             android:label="Profile" />
-        <activity android:name=".activities.ComposeActivity"></activity>
+        <activity android:name=".activities.ComposeActivity"
+            android:windowSoftInputMode="stateVisible">
+        </activity>
     </application>
 
 </manifest>

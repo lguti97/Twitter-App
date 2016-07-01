@@ -25,6 +25,7 @@ public class Tweet {
     String createdAt;
     User user;
     long uid;
+    String mediaUrl;
 
 
     //At this step we want to have a method to make JSON object into a java object
@@ -41,6 +42,11 @@ public class Tweet {
     public User getUser(){
         return user;
     }
+    public String getMediaUrl() {
+        return mediaUrl;
+    }
+
+
 
     //Converts time posted into relative time
     public String getRelativeTimeAgo(String rawJsonDate) {
@@ -75,6 +81,11 @@ public class Tweet {
             tweet.uid = jsonObject.getLong("id");
             tweet.createdAt = jsonObject.getString("created_at");
             tweet.user = User.fromJSON(jsonObject.getJSONObject("user"));
+            JSONArray media = jsonObject.optJSONObject("entities").optJSONArray("media");
+            if (media != null && media.length() > 0){
+                tweet.mediaUrl = media.getJSONObject(0).getString("media_url");
+            }
+
 
         } catch (JSONException e) {
             e.printStackTrace();

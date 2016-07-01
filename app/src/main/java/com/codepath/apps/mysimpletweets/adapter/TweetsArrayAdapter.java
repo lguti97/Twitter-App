@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.codepath.apps.mysimpletweets.R;
 import com.codepath.apps.mysimpletweets.activities.ProfileActivity;
 import com.codepath.apps.mysimpletweets.activities.TimelineActivity;
@@ -39,6 +40,7 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
         TextView tvUserName;
         TextView tvBody;
         TextView tvPosted;
+        ImageView ivMedia;
     }
 
     public TweetsArrayAdapter(Context context, ArrayList<Tweet> tweets) {
@@ -58,6 +60,7 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
             viewHolder.tvUserName = (TextView) convertView.findViewById(R.id.tvUserName);
             viewHolder.tvBody = (TextView) convertView.findViewById(R.id.tvBody);
             viewHolder.tvPosted = (TextView) convertView.findViewById(R.id.tvPosted);
+            viewHolder.ivMedia = (ImageView) convertView.findViewById(R.id.ivMedia);
             Typeface font0 = Typeface.createFromAsset(getContext().getAssets(), "Gotham-Bold(1).ttf");
             Typeface font1 = Typeface.createFromAsset(getContext().getAssets(), "Gotham-Light(1).ttf");
             viewHolder.tvBody.setTypeface(font1);
@@ -72,8 +75,13 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
         viewHolder.tvUserName.setText(tweet.getUser().getScreenName());
         viewHolder.tvBody.setText(tweet.getBody());
         viewHolder.tvPosted.setText(formattedTime);
+        viewHolder.ivMedia.setImageResource(0);
         viewHolder.ivProfileImage.setImageResource(0);
-        Glide.with(getContext()).load(tweet.getUser().getProfileImageUrl()).into(viewHolder.ivProfileImage);
+        Glide.with(getContext()).load(tweet.getUser().getProfileImageUrl()).diskCacheStrategy(DiskCacheStrategy.ALL).into(viewHolder.ivProfileImage);
+        Glide.with(getContext()).load(tweet.getMediaUrl()).fitCenter().into(viewHolder.ivMedia);
+        if (tweet.getMediaUrl() == null){
+            viewHolder.ivMedia.setVisibility(View.GONE);
+        }
 
         // Allows user to click on profile image to observe user!
         viewHolder.ivProfileImage.setOnClickListener(new View.OnClickListener() {

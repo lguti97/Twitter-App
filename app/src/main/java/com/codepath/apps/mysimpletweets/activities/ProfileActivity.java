@@ -2,6 +2,7 @@ package com.codepath.apps.mysimpletweets.activities;
 
 import android.media.Image;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -36,8 +37,11 @@ public class ProfileActivity extends AppCompatActivity {
     @BindView(R.id.tvFollowing) TextView tvFollowing;
     @BindView(R.id.ivProfileImage) ImageView ivProfileImage;
 
+
+
     private TwitterClient client;
     private User user;
+    protected SwipeRefreshLayout swipeContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,17 +54,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         client = TwitterApplication.getRestClient();
-        //Get the account info
-        /*
-        client.getUserInfo(new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                super.onSuccess(statusCode, headers, response);
-                user = User.fromJSON(response);
-                getSupportActionBar().setTitle("@" + user.getScreenName());
-                populateProfileHeader(user);
-            }
-        });  */
+
         client.getUserProfile(screenName, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

@@ -6,7 +6,31 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
-public abstract class SmartFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
+import com.astuetz.PagerSlidingTabStrip;
+import com.codepath.apps.mysimpletweets.R;
+
+public abstract class SmartFragmentStatePagerAdapter extends FragmentStatePagerAdapter implements PagerSlidingTabStrip.IconTabProvider {
+    final int PAGE_COUNT = 3;
+    private int tabIcons[] = {R.drawable.ic_action_name, R.drawable.ic_moments, R.drawable.ic_notifications, R.drawable.ic_messages};
+
+
+
+    @Override
+    public int getCount() {
+        return PAGE_COUNT;
+    }
+    /*
+    @Override
+    public Fragment getItem(int position) {
+        return PageFragment.newInstance(position + 1);
+    } */
+
+    @Override
+    public int getPageIconResId(int position) {
+        return tabIcons[position];
+    }
+
+
     // Sparse array to keep track of registered fragments in memory
     private SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
 

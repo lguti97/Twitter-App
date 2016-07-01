@@ -1,5 +1,6 @@
 package com.codepath.apps.mysimpletweets.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,8 +10,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.codepath.apps.mysimpletweets.R;
 import com.codepath.apps.mysimpletweets.activities.TimelineActivity;
 import com.codepath.apps.mysimpletweets.adapter.TweetsArrayAdapter;
@@ -24,6 +29,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
 /*
@@ -37,28 +44,22 @@ public class TweetsListFragment extends Fragment{
     protected ArrayList<Tweet> tweets;
     protected TweetsArrayAdapter aTweets;
     protected ListView lvTweets;
-    protected SwipeRefreshLayout swipeContainer;
+    //protected SwipeRefreshLayout swipeContainer;
     TwitterClient client;
+
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_tweets_list, parent, false);
+        ButterKnife.bind(this, v);
         client = TwitterApplication.getRestClient();
         lvTweets = (ListView) v.findViewById(R.id.lvTweets);
         lvTweets.setAdapter(aTweets);
 
-        //This is for the refresh!
-        swipeContainer = (SwipeRefreshLayout) v.findViewById(R.id.swipeContainer);
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                fetchTimelineAsync();
-            }
-        });
-
         return v;
+
     }
 
 
@@ -74,26 +75,6 @@ public class TweetsListFragment extends Fragment{
     //addAll just adds the extra stuff into adapter! Doesn't override.
     public void addAll (ArrayList<Tweet> tweets) {
         aTweets.addAll(tweets);
-    }
-
-    //Fetches the updated data
-    public void fetchTimelineAsync() {
-        client.getHomeTimeline(new JsonHttpResponseHandler() {
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray json) {
-                // Remember to CLEAR OUT old items before appending in the new ones
-                aTweets.clear();
-                // ...the data has come back, add new items to your adapter...
-                addAll(Tweet.fromJSONArray(json));
-                // Now we call setRefreshing(false) to signal refresh has finished
-                swipeContainer.setRefreshing(false);
-            }
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.d("DEBUG", errorResponse.toString());
-            }
-        });
     }
 
 
