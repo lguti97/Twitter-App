@@ -62,7 +62,7 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
             viewHolder.tvPosted = (TextView) convertView.findViewById(R.id.tvPosted);
             viewHolder.ivMedia = (ImageView) convertView.findViewById(R.id.ivMedia);
             Typeface font0 = Typeface.createFromAsset(getContext().getAssets(), "Gotham-Bold(1).ttf");
-            Typeface font1 = Typeface.createFromAsset(getContext().getAssets(), "Gotham-Light(1).ttf");
+            Typeface font1 = Typeface.createFromAsset(getContext().getAssets(), "Montserrat-Regular.ttf");
             viewHolder.tvBody.setTypeface(font1);
             viewHolder.tvUserName.setTypeface(font0);
             convertView.setTag(viewHolder);
@@ -95,6 +95,9 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
                 getContext().startActivity(i);
             }
         });
+
+
+
 
 
         return convertView;

@@ -2,6 +2,10 @@ package com.codepath.apps.mysimpletweets.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.Image;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,12 +15,16 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.codepath.apps.mysimpletweets.R;
 import com.codepath.apps.mysimpletweets.application.TwitterApplication;
 import com.codepath.apps.mysimpletweets.client.TwitterClient;
 import com.codepath.apps.mysimpletweets.models.Tweet;
+import com.codepath.apps.mysimpletweets.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONObject;
@@ -30,15 +38,38 @@ public class ComposeActivity extends AppCompatActivity {
 
     @BindView(R.id.btnCompose) Button btnCompose;
     @BindView(R.id.etTweet) EditText etTweet;
+    @BindView(R.id.ivProfile) ImageView ivProfile;
     TwitterClient client;
     String status;
     Tweet tweet;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compose);
         ButterKnife.bind(this);
+
+
+        TwitterApplication.getRestClient().getUserInfo(new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                User user = User.fromJSON(response);
+                Glide.with(getApplicationContext()).load(user.getProfileImageUrl()).asBitmap().centerCrop().into(new BitmapImageViewTarget(ivProfile) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable circularBitmapDrawable =
+                                RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        ivProfile.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
+                //Glide.with(getApplicationContext()).load(user.getProfileImageUrl()).transform(new RoundedCornersTransformation(10, 10)).into(ivProfile);
+            }
+        });
         client = TwitterApplication.getRestClient();
     }
 

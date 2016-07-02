@@ -19,6 +19,7 @@
         android:layout_height="150dp"
         android:id="@+id/ivMedia"
         android:layout_below="@+id/tvBody"
+        android:background="#FFFF"
         android:layout_toRightOf="@+id/ivProfileImage"
         android:layout_toEndOf="@+id/ivProfileImage" />
 

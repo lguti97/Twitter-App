@@ -1,11 +1,14 @@
 package com.codepath.apps.mysimpletweets.activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.media.Image;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,6 +23,7 @@ import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.codepath.apps.mysimpletweets.R;
 import com.codepath.apps.mysimpletweets.application.TwitterApplication;
 import com.codepath.apps.mysimpletweets.extra.SmartFragmentStatePagerAdapter;
@@ -41,6 +45,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 public class TimelineActivity extends AppCompatActivity {
 
@@ -71,7 +76,16 @@ public class TimelineActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 User user = User.fromJSON(response);
-                Glide.with(getApplicationContext()).load(user.getProfileImageUrl()).into(ivProfile);
+                Glide.with(getApplicationContext()).load(user.getProfileImageUrl()).asBitmap().centerCrop().into(new BitmapImageViewTarget(ivProfile) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable circularBitmapDrawable =
+                                RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        ivProfile.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
+                //Glide.with(getApplicationContext()).load(user.getProfileImageUrl()).transform(new RoundedCornersTransformation(10, 10)).into(ivProfile);
             }
         });
 
@@ -133,6 +147,8 @@ public class TimelineActivity extends AppCompatActivity {
         i.putExtra("screen_name", "LuisAGutZap");
         startActivity(i);
     }
+
+
 
 
     /*
